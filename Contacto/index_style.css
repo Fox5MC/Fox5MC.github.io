@@ -5,14 +5,14 @@
 
 div#general{
 	margin-top: 50px;
-	height: 1520px;
+	height: 550px;
 }
 
 div#body{
 	margin-top:20px;
 	margin-left: 250px;
 	width: 750px;
-	height: 1300px;
+	height: 500px;
 	background-color: #c2ddff;
 }
 
