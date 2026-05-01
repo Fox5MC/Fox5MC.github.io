@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora Nutricional</title>
+<style>
+    body { font-family: Arial; background:#f4f4f4; padding:20px; }
+    h1 { color:#333; }
+    .box { background:white; padding:15px; margin:10px 0; border-radius:10px; }
+    button { margin-top:10px; padding:8px; }
+</style>
+</head>
+<body>
+
+<h1>Menú Nutricional</h1>
+
+<div class="box">
+<h3>1. Kcal por macronutriente</h3>
+<input id="totalKcal" placeholder="Total kcal"><br>
+<input id="p" placeholder="% Proteína"><br>
+<input id="l" placeholder="% Lípidos"><br>
+<input id="hc" placeholder="% HC"><br>
+<button onclick="kcalMacro()">Calcular</button>
+<p id="res1"></p>
+</div>
+
+<div class="box">
+<h3>2. Kcal → gramos</h3>
+<input id="kcal" placeholder="Kcal"><br>
+<button onclick="kcalAG()">Calcular</button>
+<p id="res2"></p>
+</div>
+
+<div class="box">
+<h3>3. Gramos → kcal</h3>
+<input id="gramos" placeholder="Gramos"><br>
+<button onclick="gAKcal()">Calcular</button>
+<p id="res3"></p>
+</div>
+
+<div class="box">
+<h3>4. g/kg</h3>
+<input id="g" placeholder="Gramos"><br>
+<input id="peso" placeholder="Peso (kg)"><br>
+<button onclick="gkg()">Calcular</button>
+<p id="res4"></p>
+</div>
+
+<div class="box">
+<h3>5. Cuadrar HC</h3>
+<input id="hcTotal" placeholder="HC totales (g)"><br>
+<input id="hcActual" placeholder="HC actuales (g)"><br>
+<button onclick="cuadrarHC()">Calcular</button>
+<p id="res5"></p>
+</div>
+
+<div class="box">
+<h3>6. Proteína por diferencia</h3>
+<input id="protObj" placeholder="Proteína objetivo (g)"><br>
+<input id="protAct" placeholder="Proteína actual (g)"><br>
+<button onclick="protDif()">Calcular</button>
+<p id="res6"></p>
+</div>
+
+<script>
+function kcalMacro() {
+    let total = parseFloat(document.getElementById("totalKcal").value);
+    let p = parseFloat(document.getElementById("p").value);
+    let l = parseFloat(document.getElementById("l").value);
+    let hc = parseFloat(document.getElementById("hc").value);
+
+    let res = `
+    Proteína: ${(total*p/100).toFixed(2)} kcal<br>
+    Lípidos: ${(total*l/100).toFixed(2)} kcal<br>
+    HC: ${(total*hc/100).toFixed(2)} kcal
+    `;
+    document.getElementById("res1").innerHTML = res;
+}
+
+function kcalAG() {
+    let kcal = parseFloat(document.getElementById("kcal").value);
+    let res = `
+    Proteína: ${(kcal/4).toFixed(2)} g<br>
+    HC: ${(kcal/4).toFixed(2)} g<br>
+    Grasas: ${(kcal/9).toFixed(2)} g
+    `;
+    document.getElementById("res2").innerHTML = res;
+}
+
+function gAKcal() {
+    let g = parseFloat(document.getElementById("gramos").value);
+    let res = `
+    Proteína: ${(g*4).toFixed(2)} kcal<br>
+    HC: ${(g*4).toFixed(2)} kcal<br>
+    Grasas: ${(g*9).toFixed(2)} kcal
+    `;
+    document.getElementById("res3").innerHTML = res;
+}
+
+function gkg() {
+    let g = parseFloat(document.getElementById("g").value);
+    let peso = parseFloat(document.getElementById("peso").value);
+    document.getElementById("res4").innerHTML =
+        `Resultado: ${(g/peso).toFixed(2)} g/kg`;
+}
+
+function cuadrarHC() {
+    let total = parseFloat(document.getElementById("hcTotal").value);
+    let actual = parseFloat(document.getElementById("hcActual").value);
+
+    let restante = total - actual;
+    let porciones = restante / 15;
+
+    document.getElementById("res5").innerHTML = `
+    HC restantes: ${restante.toFixed(2)} g<br>
+    Porciones (15g): ${porciones.toFixed(2)}
+    `;
+}
+
+function protDif() {
+    let obj = parseFloat(document.getElementById("protObj").value);
+    let act = parseFloat(document.getElementById("protAct").value);
+
+    let dif = obj - act;
+    let porciones = dif / 7;
+
+    document.getElementById("res6").innerHTML = `
+    Diferencia: ${dif.toFixed(2)} g<br>
+    Porciones (7g): ${porciones.toFixed(2)}
+    `;
+}
+</script>
+
+</body>
+</html>
