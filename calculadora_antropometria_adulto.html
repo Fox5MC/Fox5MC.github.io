@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Antropometría — Adulto</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#182235;--muted:#667085;--accent:#b4233b;--line:#e3e7ef;--soft:#fff1f2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(135deg,#7f1d32,#c0354d);color:white;padding:30px 18px}
+header .wrap,main{max-width:1050px;margin:auto}
+h1{margin:0 0 6px;font-size:clamp(1.6rem,4vw,2.3rem)}
+header p{margin:0;opacity:.92}
+main{padding:22px 16px 50px}
+.notice{background:#fff8e7;border:1px solid #f2d28b;border-radius:12px;padding:13px 15px;margin-bottom:18px;color:#654d12}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button{border:1px solid var(--line);border-radius:999px;background:white;padding:10px 14px;cursor:pointer;color:var(--ink);font-weight:650}
+.tabs button.active{background:var(--accent);color:white;border-color:var(--accent)}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 4px 16px #17203308}
+h2{font-size:1.2rem;margin:0 0 14px}h3{font-size:1rem;margin:18px 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:13px}
+label{display:block;font-size:.9rem;font-weight:650;margin-bottom:5px}
+input,select{width:100%;padding:10px 11px;border:1px solid #cbd2df;border-radius:9px;background:white;font:inherit;color:var(--ink)}
+input:focus,select:focus{outline:2px solid #e7a2ae;border-color:var(--accent)}
+button.calc{margin-top:14px;background:var(--accent);color:white;border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer}
+button.calc:hover{filter:brightness(.94)}
+.result{margin-top:15px;padding:14px;border-radius:10px;background:#f0f7ff;border:1px solid #cfe3fb;display:none;white-space:pre-line}
+.result.show{display:block}.result strong{font-size:1.06rem}
+.small{font-size:.87rem;color:var(--muted)}.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f6f7fa;padding:9px 11px;border-radius:8px;overflow-wrap:anywhere}
+footer{color:var(--muted);font-size:.85rem;text-align:center;padding:20px}
+@media(max-width:520px){.card{padding:15px}.tabs button{flex:1}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Calculadora de Antropometría</h1><p>Lam :p</p></div></header>
+<main>
+<div class="notice"><strong>Importante:</strong> Selecciona los calculos que desees calcular e introduce los datos adecuados, Te amo ❤️ </div>
+<nav class="tabs" aria-label="Secciones">
+<button class="active" data-tab="peso">Peso e IMC</button><button data-tab="indices">Índices</button><button data-tab="grasa">Grasa corporal</button><button data-tab="brazo">Brazo y músculo</button><button data-tab="agua">Agua corporal</button><button data-tab="otros">Otros cálculos</button>
+</nav>
+
+<section class="panel active" id="peso">
+<div class="card"><h2>Peso teórico e ideal</h2>
+<div class="grid">
+<div><label for="talla">Talla (cm)</label><input id="talla" type="number" min="1" step="any" placeholder="Ej. 170"></div>
+<div><label for="sexo">Genero para las fórmulas</label><select id="sexo"><option value="h">Hombre</option><option value="m">Mujer</option></select></div>
+<div><label for="peso">Peso actual (kg)</label><input id="peso" type="number" min="0" step="any" placeholder="Ej. 70"></div>
+<div><label for="habitual">Peso habitual (kg)</label><input id="habitual" type="number" min="0" step="any" placeholder="Opcional"></div>
+</div>
+<button class="calc" onclick="calcPeso()">Calcular</button><div class="result" id="rPeso"></div>
+</div>
+<div class="card"><h2>Complexión corporal</h2><div class="grid">
+<div><label for="muneca">Circunferencia de muñeca (cm)</label><input id="muneca" type="number" min="0" step="any"></div>
+</div><button class="calc" onclick="calcComplexion()">Calcular complexión</button><div class="result" id="rComp"></div></div>
+</section>
+
+<section class="panel" id="indices">
+<div class="card"><h2>Índice de masa corporal (IMC)</h2><div class="grid"><div><label for="imcpeso">Peso (kg)</label><input id="imcpeso" type="number" min="0" step="any"></div><div><label for="imctalla">Talla (m)</label><input id="imctalla" type="number" min="0" step="any" placeholder="Ej. 1.70"></div></div><button class="calc" onclick="calcIMC()">Calcular IMC</button><div class="result" id="rIMC"></div></div>
+<div class="card"><h2>Índice cintura-cadera (ICC)</h2><div class="grid"><div><label for="cintura">Cintura (cm)</label><input id="cintura" type="number" min="0" step="any"></div><div><label for="cadera">Cadera (cm)</label><input id="cadera" type="number" min="0" step="any"></div><div><label for="sexoICC">Genero para la tabla</label><select id="sexoICC"><option value="h">Hombre</option><option value="m">Mujer</option></select></div></div><button class="calc" onclick="calcICC()">Calcular ICC</button><div class="result" id="rICC"></div></div>
+</section>
+
+<section class="panel" id="grasa">
+<div class="card"><h2>Porcentaje de grasa corporal (4 pliegues)</h2>
+<p class="small">Ingresa los pliegues en milímetros.</p>
+<div class="grid"><div><label for="gsexo">Genero</label><select id="gsexo"><option value="h">Hombre</option><option value="m">Mujer</option></select></div><div><label for="edad">Edad (años)</label><input id="edad" type="number" min="17" max="120" step="1"></div><div><label for="pcb">PCB (mm)</label><input id="pcb" type="number" min="0" step="any"></div><div><label for="pct">PCT (mm)</label><input id="pct" type="number" min="0" step="any"></div><div><label for="pcse">PCSE (mm)</label><input id="pcse" type="number" min="0" step="any"></div><div><label for="pcsi">PCSI (mm)</label><input id="pcsi" type="number" min="0" step="any"></div><div><label for="gcpeso">Peso actual (kg), para GCT y MLG</label><input id="gcpeso" type="number" min="0" step="any"></div></div>
+<button class="calc" onclick="calcGrasa()">Calcular grasa, GCT y MLG</button><div class="result" id="rGrasa"></div>
+</div>
+</section>
+
+<section class="panel" id="brazo">
+<div class="card"><h2>Área muscular de brazo (AMB) y corregida (cAMB)</h2><div class="grid">
+<div><label for="cb">Circunferencia de brazo, CB (cm)</label><input id="cb" type="number" min="0" step="any"></div><div><label for="pctbrazo">PCT (mm)</label><input id="pctbrazo" type="number" min="0" step="any"></div><div><label for="bsexo">Genero para cAMB/MMT</label><select id="bsexo"><option value="h">Hombre</option><option value="m">Mujer</option></select></div><div><label for="btalla">Talla (cm), para MMT</label><input id="btalla" type="number" min="0" step="any"></div></div><button class="calc" onclick="calcBrazo()">Calcular</button><div class="result" id="rBrazo"></div></div>
+<div class="card"><h2>Masa muscular total por extremidades</h2><div class="grid">
+<div><label for="mtalla">Talla (m)</label><input id="mtalla" type="number" min="0" step="any"></div><div><label for="mcb">CB (cm)</label><input id="mcb" type="number" min="0" step="any"></div><div><label for="cmuslo">Circunferencia de muslo (cm)</label><input id="cmuslo" type="number" min="0" step="any"></div><div><label for="cp">Circunferencia de pantorrilla, CP (cm)</label><input id="cp" type="number" min="0" step="any"></div><div><label for="medad">Edad (años)</label><input id="medad" type="number" min="0" step="any"></div><div><label for="msexo">Genero</label><select id="msexo"><option value="h">Hombre (1)</option><option value="m">Mujer (0)</option></select></div></div><button class="calc" onclick="calcMMTE()">Calcular MMT</button><div class="result" id="rMMTE"></div></div>
+<div class="card"><h2>Área grasa de brazo (AGB)</h2><div class="grid"><div><label for="agcb">CB (cm)</label><input id="agcb" type="number" min="0" step="any"></div><div><label for="agamb">AMB (cm²), si ya la calculaste</label><input id="agamb" type="number" min="0" step="any"></div></div><button class="calc" onclick="calcAGB()">Calcular AGB</button><div class="result" id="rAGB"></div></div>
+</section>
+
+<section class="panel" id="agua">
+<div class="card"><h2>Agua corporal total (ACT)</h2><div class="grid"><div><label for="asexo">Genero</label><select id="asexo"><option value="h">Hombre</option><option value="m">Mujer</option></select></div><div><label for="aedad">Edad (años; usada en fórmula de hombre)</label><input id="aedad" type="number" min="0" step="any"></div><div><label for="atalla">Talla (cm)</label><input id="atalla" type="number" min="0" step="any"></div><div><label for="apeso">Peso (kg)</label><input id="apeso" type="number" min="0" step="any"></div></div><button class="calc" onclick="calcAgua()">Calcular ACT</button><div class="result" id="rAgua"></div></div>
+</section>
+
+<section class="panel" id="otros">
+<div class="card"><h2>Estimación de ganancia muscular mensual</h2><div class="grid"><div><label for="gpeso">Peso corporal (kg)</label><input id="gpeso" type="number" min="0" step="any"></div><div><label for="fase">Fase</label><select id="fase"><option value="principiante">Principiante</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option></select></div></div><button class="calc" onclick="calcGanancia()">Calcular rango orientativo</button><div class="result" id="rGanancia"></div><p class="small">Proviene del pdf.</p></div>
+<div class="card"><h2>Lista de formulas</h2>
+<div class="formula">PT (Metropolitan Life) = 50 + 0.75 × (talla cm − 150)</div>
+<div class="formula">IMC = peso (kg) ÷ talla² (m²)</div>
+<div class="formula">ICC = cintura (cm) ÷ cadera (cm)</div>
+<div class="formula">%GC Siri = (495 ÷ densidad corporal) − 450</div>
+<div class="formula">MLG = peso actual − kg de masa grasa</div>
+<div class="small">Formulas :0.</div>
+</div>
+</section>
+<footer>Calculadora educativa · Los datos se procesan localmente en tu navegador; no se envían a un servidor.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>parseFloat($(id).value);
+const valid=(...xs)=>xs.every(x=>Number.isFinite(x)&&x>0);
+const fmt=(x,d=2)=>Number.isFinite(x)?x.toLocaleString('es-MX',{maximumFractionDigits:d,minimumFractionDigits:0}):'—';
+function show(id,s){$(id).textContent=s;$(id).classList.add('show')}
+function log10(x){return Math.log(x)/Math.LN10}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab))}));
+function calcPeso(){
+ const t=num('talla'),p=num('peso'),h=num('habitual'),s=$('sexo').value;
+ if(!valid(t)){show('rPeso','Ingresa una talla válida en centímetros.');return}
+ const m=t/100,met=50+.75*(t-150),rob=s==='h'?51.65+1.85*(t/2.54-60):48.67+1.65*(t/2.54-60),min=18.5*m*m,max=24.9*m*m,ideal=m*m*(s==='h'?23:21.5);
+ let out=`Peso teórico (Metropolitan Life): ${fmt(met)} kg\nPeso teórico (Robinson): ${fmt(rob)} kg\nRango por IMC 18.5–24.9: ${fmt(min)} a ${fmt(max)} kg\nPeso ideal por IMC (${s==='h'?'hombre: 23':'mujer: 21.5'}): ${fmt(ideal)} kg`;
+ if(valid(p)){out+=`\n\n% del peso teórico (Metropolitan Life): ${fmt(p/met*100)}%`;if(valid(h))out+=`\n% del peso habitual: ${fmt(p/h*100)}%`}
+ show('rPeso',out)
+}
+function calcComplexion(){const t=num('talla'),mu=num('muneca'),s=$('sexo').value;if(!valid(t,mu)){show('rComp','Ingresa talla y muñeca válidas.');return}const c=t/mu;let tipo;if(s==='h')tipo=c<9.6?'Grande':c<=10.4?'Mediana':'Chica';else tipo=c<10.1?'Grande':c<=11?'Mediana':'Chica';show('rComp',`Índice de complexión: ${fmt(c)}\nClasificación según la tabla del material: ${tipo}`)}
+function calcIMC(){const p=num('imcpeso'),t=num('imctalla');if(!valid(p,t)){show('rIMC','Ingresa peso y talla válidos.');return}const v=p/(t*t);show('rIMC',`IMC = ${fmt(v)} kg/m²\nReferencia de talla baja del material: bajo peso <18; normopeso 18.1–23; sobrepeso 23.1–25; obesidad >25.\nLa tabla aplica en el material a hombre <1.60 m y mujer <1.50 m; no la extrapoles a otras tallas.`)}
+function calcICC(){const c=num('cintura'),ca=num('cadera'),s=$('sexoICC').value;if(!valid(c,ca)){show('rICC','Ingresa cintura y cadera válidas.');return}const v=c/ca;let r;if(s==='h')r=v<=.95?'Bajo':v<1?'Moderado':'Alto';else r=v<=.80?'Bajo':v<.85?'Moderado':'Alto';show('rICC',`ICC = ${fmt(v,3)}\nRiesgo según los cortes del material: ${r}\nNota: algunos límites de la tabla original se solapan en 1.0 para hombres y 0.85 para mujeres; se asignó el límite superior a “Alto”.`)}
+function calcGrasa(){const s=$('gsexo').value,e=num('edad'),a=num('pcb'),b=num('pct'),c=num('pcse'),d=num('pcsi'),p=num('gcpeso');if(!valid(e,a,b,c,d)||e<17){show('rGrasa','Ingresa edad (17 o más) y los cuatro pliegues en mm.');return}let coef,base;if(s==='h'){if(e<=19){base=1.1620;coef=.0630}else if(e<=29){base=1.1631;coef=.0632}else if(e<=39){base=1.1422;coef=.0544}else if(e<=49){base=1.1620;coef=.0700}else{base=1.1715;coef=.0779}}else{if(e<=19){base=1.1549;coef=.0678}else if(e<=29){base=1.1599;coef=.0717}else if(e<=39){base=1.1423;coef=.0632}else if(e<=49){base=1.1333;coef=.0612}else{base=1.1339;coef=.0645}}const sum=a+b+c+d,D=base-coef*log10(sum),siri=495/D-450,brozek=457/D-414;let out=`Suma de 4 pliegues: ${fmt(sum)} mm\nLog₁₀ de la suma: ${fmt(log10(sum),4)}\nDensidad corporal (DC): ${fmt(D,4)}\n% grasa corporal — Siri: ${fmt(siri)}%\n% grasa corporal — Brozek: ${fmt(brozek)}%`;if(valid(p)){const mg=p*siri/100;out+=`\n\nGrasa corporal total (usando Siri): ${fmt(mg)} kg\nMasa libre de grasa (usando Siri): ${fmt(p-mg)} kg`}show('rGrasa',out)}
+function calcBrazo(){const cb=num('cb'),pct=num('pctbrazo'),s=$('bsexo').value,t=num('btalla');if(!valid(cb,pct)){show('rBrazo','Ingresa CB y PCT válidos.');return}const amb=Math.pow(cb-.31416*pct,2)/(4*Math.PI),camb=amb-(s==='h'?10:6.5);let out=`AMB = ${fmt(amb)} cm²\ncAMB = ${fmt(camb)} cm²`;if(valid(t))out+=`\nMMT estimada por cAMB = ${(t*(.0264+.0029*camb)).toLocaleString('es-MX',{maximumFractionDigits:2})} kg`;out+='\nNota del material: no evaluar AMB si el PCT es ≥ al percentil 85.';show('rBrazo',out)}
+function calcMMTE(){const t=num('mtalla'),cb=num('mcb'),cm=num('cmuslo'),cp=num('cp'),e=num('medad'),s=$('msexo').value;if(!valid(t,cb,cm,cp,e)){show('rMMTE','Completa talla, perímetros y edad con valores válidos.');return}const g=s==='h'?1:0,v=t*(.0064*cb*cb+.0032*cm*cm+.0015*cp*cp+2.56*g+.136*e);show('rMMTE',`Masa muscular total estimada: ${fmt(v)} kg\nSe aplicó la fórmula por extremidades del material.`)}
+function calcAGB(){const cb=num('agcb'),amb=num('agamb');if(!valid(cb)||!Number.isFinite(amb)||amb<0){show('rAGB','Ingresa CB y un AMB válido (puede ser 0).');return}const ab=cb*cb/(4*Math.PI),agb=ab-amb;show('rAGB',`Área de brazo (AB) = ${fmt(ab)} cm²\nÁrea grasa de brazo (AGB = AB − AMB) = ${fmt(agb)} cm²`)}
+function calcAgua(){const s=$('asexo').value,e=num('aedad'),t=num('atalla'),p=num('apeso');if(!valid(t,p)||(s==='h'&&!valid(e))){show('rAgua','Ingresa talla y peso; para hombre también edad.');return}const act=s==='h'?2.447-(.09516*e)+(.1074*t)+(.3362*p):-2.097+(.1069*t)+(.2466*p);show('rAgua',`Agua corporal total (ACT): ${fmt(act)} litros\nACT como porcentaje del peso: ${fmt(act/p*100)}%\nReferencia del material: hombre 50–65%; mujer 45–60%.`)}
+function calcGanancia(){const p=num('gpeso'),f=$('fase').value;if(!valid(p)){show('rGanancia','Ingresa un peso válido.');return}const ranges={principiante:[1,1.5],intermedio:[.5,1],avanzado:[.25,.5]},r=ranges[f];show('rGanancia',`Rango mensual orientativo según porcentaje del peso corporal:\n${fmt(p*r[0]/100)} a ${fmt(p*r[1]/100)} kg/mes (${r[0]}–${r[1]}% del peso)\nLa tabla del material también muestra rangos anuales distintos por fase.`)}
+</script>
+</body>
+</html>
